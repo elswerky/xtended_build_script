@@ -14,8 +14,8 @@ read -r email
 echo
 echo "Answers:"
 echo
-echo "1. your github username is $username"
-echo "2. your github email is $email"
+echo "1. your github username is :  $username"
+echo "2. your github email is  :  $email"
 echo
 echo -n 'is this correct ? '
 echo
