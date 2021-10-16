@@ -1,0 +1,61 @@
+#!/bin/bash
+
+echo "Hello, please answer these two questions ."
+echo 
+echo ' your github username and email is required to be able to init and synchronize rom sources ,, so please write them in coming questions '
+echo
+echo -n "what is your github username ?  "
+read -r username
+
+echo -n "what is your github email ?  "
+read -r email
+
+
+echo
+echo "Answers:"
+echo
+echo "1. your github username is $username"
+echo "2. your github email is $email"
+echo
+echo -n 'is this correct ? '
+echo
+echo -n '   if this correct ? type y ,, if  anything is wrong press Ctrl + c and start again '
+read answer
+
+sudo apt update && sudo apt upgrade -y 
+sudo apt install nano vim tmate -y
+#install env
+sudo apt install python bc bison build-essential ccache curl flex g++-multilib gcc-multilib git gnupg gperf imagemagick lib32ncurses5-dev lib32readline-dev lib32z1-dev liblz4-tool libncurses5 libncurses5-dev libsdl1.2-dev libssl-dev libwxgtk3.0-gtk3-dev libxml2 libxml2-utils lzop pngcrush rsync schedtool squashfs-tools xsltproc zip zlib1g-dev -y
+# also run this script
+cd ~ && sudo apt install git -y && git clone https://github.com/akhilnarang/scripts && cd scripts && sudo bash setup/android_build_env.sh && sudo bash setup/install_android_sdk.bash 
+sudo apt autoremove -y
+# let's move to $HOME
+cd ~
+mkdir ~/bin
+PATH=~/bin:$PATH
+# Download Repo itself
+curl https://storage.googleapis.com/git-repo-downloads/repo > ~/bin/repo
+# Make Repo executable
+chmod a+x ~/bin/repo
+
+git config --global user.email $email
+
+git config --global user.name $username
+
+# let's downlaod rom sources 
+mkdir xtended2 -p  && cd xtended2
+#repo init -u https://github.com/Project-Xtended/manifest.git -b xr
+repo init --depth=1 -u https://github.com/Project-Xtended/manifest.git -b xr
+
+#repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags
+repo sync -c --force-sync --optimized-fetch --no-tags --no-clone-bundle --prune -j$(nproc --all)
+
+
+# let's download device tree ,vendor , kernel
+git clone https://github.com/elswerky/device_realme_RMX1807 -b xtended device/realme/RMX1807 && git clone --depth=1 https://github.com/elswerky/vendor_realme_RMX1807 vendor/realme/RMX1807 && git clone --depth=1 https://github.com/elswerky/kernel-realme-sdm660 kernel/realme/sdm660
+
+
+
+. build/envsetup.sh
+lunch xtended_RMX1807-user
+mka xtended -j$(nproc --all)
