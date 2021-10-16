@@ -43,7 +43,7 @@ git config --global user.email $email
 git config --global user.name $username
 
 # let's downlaod rom sources 
-mkdir xtended2 -p  && cd xtended2
+mkdir xtended -p  && cd xtended
 #repo init -u https://github.com/Project-Xtended/manifest.git -b xr
 repo init --depth=1 -u https://github.com/Project-Xtended/manifest.git -b xr
 
@@ -54,7 +54,7 @@ repo sync -c --force-sync --optimized-fetch --no-tags --no-clone-bundle --prune 
 # let's download device tree ,vendor , kernel
 git clone https://github.com/elswerky/device_realme_RMX1807 -b xtended device/realme/RMX1807 && git clone --depth=1 https://github.com/elswerky/vendor_realme_RMX1807 vendor/realme/RMX1807 && git clone --depth=1 https://github.com/elswerky/kernel-realme-sdm660 kernel/realme/sdm660
 
-cd ~/xtended2
+cd ~/xtended
 . build/envsetup.sh 
 lunch xtended_RMX1807-user
 mka xtended -j$(nproc --all)
